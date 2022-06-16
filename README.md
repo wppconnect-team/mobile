@@ -13,6 +13,12 @@
 
 This project uses wa-js which extracts some functions from WhatsApp fonts.
 
+## How to use this project
+
+In the near future we will be releasing them on the playstore and if we succeed we will also launch them on the appstore or you can run this app on your local machine using the necessary dependencies to run a react native app, see here -> <https://reactnative.dev/docs/environment-setup>
+
+## Development
+
 This is a React Native project and to run it we use common react native scripts:
 
 ```bash
@@ -35,9 +41,15 @@ npm run test
 npm run lint
 ```
 
-## How to use this project
+## Maintainers
 
-In the near future we will be releasing them on the playstore and if we succeed we will also launch them on the appstore or you can run this app on your local machine using the necessary dependencies to run a react native app, see here -> <https://reactnative.dev/docs/environment-setup>
+Maintainers are needed, I cannot keep with all the updates by myself. If you are
+interested please open a Pull Request.
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to
+discuss what you would like to change.
 
 ## License
 
