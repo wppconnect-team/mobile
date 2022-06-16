@@ -1,24 +1,14 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 import React from 'react';
 import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
   useColorScheme,
-  BackHandler,
   useWindowDimensions,
   Linking,
   View
 } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-
 import {
   FlingGestureHandler,
   Directions,
@@ -26,25 +16,27 @@ import {
 } from 'react-native-gesture-handler';
 import WebView from 'react-native-webview';
 import axios from 'axios';
+import UselessTextInputMultiline from './components/inputMessage';
 
 const userAgent = `Mozilla/5.0 (Linux; Win64; x64; rv:46.0) Gecko/20100101 Firefox/68.0`;
-const INJECTED_JAVASCRIPT = `
-	(function () {
-		// Disable zooming in (textinput focus zoom messes up ux)
-		const meta = document.createElement('meta');
-		meta.setAttribute(
-			'content',
-			'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
-		);
-		meta.setAttribute('name', 'viewport');
-		document.getElementsByTagName('head')[0].appendChild(meta);
-    
-    window.ReactNativeWebView.postMessage(
-      JSON.stringify({ message: 'start'}),
-    );
-	})();
-`;
 const whatsappWebUri = 'https://web.whatsapp.com';
+const INJECTED_JAVASCRIPT = `
+  (function () {
+    // Disable zooming in (textinput focus zoom messes up ux)
+    const meta = document.createElement('meta');
+    meta.setAttribute(
+      'content',
+      'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
+    );
+    meta.setAttribute('name', 'viewport');
+    document.getElementsByTagName('head')[0].appendChild(meta);
+
+    window.ReactNativeWebView.postMessage(
+      JSON.stringify({ message: 'start' }),
+    );
+  })();
+`;
+
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
   const backgroundStyle = {
@@ -52,6 +44,7 @@ const App = () => {
   };
   const webviewRef = React.useRef();
   const { height, width } = useWindowDimensions();
+
   const loadInjecte = async () => {
     const wajs = await axios.get(
       'https://github.com/wppconnect-team/wa-js/releases/download/nightly/wppconnect-wa.js',
@@ -67,13 +60,15 @@ const App = () => {
       `);
     }
   }
+
   const onMessage = React.useCallback((event) => {
     let data = JSON.parse(event.nativeEvent.data);
     console.log(data);
-    if(data?.message === 'start') {
+    if (data?.message === 'start') {
       loadInjecte();
     }
   }, []);
+
   return (
     <SafeAreaView style={[styles.container, backgroundStyle]}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
@@ -93,6 +88,7 @@ const App = () => {
         <View
           style={{
             flex: 1,
+            position: 'relative',
           }}
         >
           <WebView
@@ -115,6 +111,16 @@ const App = () => {
             }}
             style={[styles.webView, { height: height, width: width }]}
             onMessage={onMessage}
+          />
+          <UselessTextInputMultiline
+            webviewRef={webviewRef}
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              backgroundColor: '#0f0'
+            }}
           />
         </View>
       </FlingGestureHandler>
