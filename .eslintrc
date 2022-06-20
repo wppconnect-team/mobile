@@ -4,8 +4,11 @@ extends:
   - "eslint:recommended"
   - "plugin:@typescript-eslint/eslint-recommended"
   - "plugin:@typescript-eslint/recommended"
+  - 'plugin:react-native/all'
 
 plugins:
+  - "react"
+  - "react-native"
   - "@typescript-eslint"
   - "prettier"
 
