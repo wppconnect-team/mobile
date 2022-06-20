@@ -52,7 +52,7 @@ class AppHomeScreen extends Component<AppHomeScreenProps, {}> {
     }
   };
 
-  authView = () => <Text>Legal</Text>;
+  authView = () => <Text>{JSON.stringify(this.props)}</Text>;
   noAuthView = () =>
     this.props.authcode ? (
       <QRCode
