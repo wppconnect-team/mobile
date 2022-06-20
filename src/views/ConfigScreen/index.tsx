@@ -21,6 +21,16 @@ import {defaultStyles} from 'consts/styles';
 import AppBar from 'components/AppBar';
 import translate from 'translations';
 import {NavigationScreenProp} from 'react-navigation';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {
+  Surface,
+  Stack,
+  Text,
+  ListItem,
+  Switch,
+  TextInput,
+  FAB,
+} from '@react-native-material/core';
 
 interface ConfigScreenProps {
   navigation: NavigationScreenProp<any>;
@@ -32,7 +42,7 @@ class ConfigScreen extends Component<ConfigScreenProps, {}> {
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollOuter}>
-        <View style={styles.view}>
+        <ScrollView style={styles.view}>
           <AppBar
             subtitle={translate('view.config.title', {
               defaultValue: 'Settings',
@@ -40,15 +50,100 @@ class ConfigScreen extends Component<ConfigScreenProps, {}> {
             navigation={this.props.navigation}
             useGoBack={true}
           />
-        </View>
+          <Stack fill spacing={4} style={styles.stack}>
+            <Surface elevation={2} category="medium" style={styles.surface}>
+              <Text variant={'h6'}>WA-JS</Text>
+              <Text variant={'caption'}>
+                Configurações básicas utilizadas na instância
+              </Text>
+              <TextInput
+                variant="outlined"
+                label="Nome do Dispositivo"
+                helperText={
+                  'Este nome é oque aparece nos "Dispotivos Conectados"'
+                }
+                placeholder={'WppConnect'}
+                style={styles.textInput}
+              />
+              <TextInput
+                variant="outlined"
+                label="Limite de localização em tempo real"
+                helperText={
+                  'Número de últimos chats para verificar a localização ao vivo após o recarregamento de uma página'
+                }
+                style={styles.textInput}
+                keyboardType={'numeric'}
+              />
+              <TextInput
+                variant="outlined"
+                label="ID do Google Analytics"
+                helperText={'Identificação do seu tracker no Google Analytics'}
+                placeholder={'G-SEUTRACKER'}
+                style={styles.textInput}
+              />
+              <>
+                <ListItem
+                  title="Desativar Google Analytics"
+                  trailing={props => <Switch value={false} disabled />}
+                />
+              </>
+            </Surface>
+            <Surface elevation={2} category="medium" style={styles.surface}>
+              <Text variant={'h6'}>Avançado</Text>
+              <Text variant={'caption'}>
+                Configurações para permitir a automatização remota da instância
+              </Text>
+              <TextInput
+                variant="standard"
+                placeholder={'wss://seu-servidor'}
+                label="URL de Socket"
+                helperText="Endereço do servidor Socket que fará a comunicação com o dispositivo"
+                style={{margin: 16}}
+              />
+              <>
+                {/* todo: Adicionar possibilidade de ativar um servidor junto a aplicação */}
+                <ListItem
+                  title="API"
+                  overline={'Servidor Local'}
+                  secondaryText={
+                    'Permitir comandos remotos no dispositivo via Socket'
+                  }
+                  trailing={props => <Switch value={false} />}
+                />
+              </>
+            </Surface>
+          </Stack>
+        </ScrollView>
+        <FAB
+          style={styles.fab}
+          icon={props => <Icon name="content-save" {...props} />}
+          color="primary"
+        />
       </ScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  scrollOuter: defaultStyles.scrollOuter,
+  fab: {
+    bottom: 16,
+    end: 16,
+    position: 'absolute',
+  },
   scroll: defaultStyles.scroll,
+  scrollOuter: {...defaultStyles.scrollOuter, height: '100%'},
+  stack: {
+    padding: 10,
+  },
+  surface: {
+    marginTop: 12,
+    padding: 10,
+  },
+  textInput: {
+    marginEnd: 10,
+    marginStart: 10,
+    marginTop: 16,
+  },
   view: defaultStyles.view as object,
 });
 

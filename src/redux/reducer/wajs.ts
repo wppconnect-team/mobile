@@ -22,6 +22,7 @@ export interface WaJSConfig {
   deviceName: string;
   liveLocationLimit: number;
   disableGoogleAnalytics: boolean;
+  googleAnalyticsId: string | null;
 }
 
 export interface WaJSMobileConfig {
