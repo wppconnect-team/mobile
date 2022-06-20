@@ -7,6 +7,17 @@
       },
       "config": {
         "title": "Settings"
+      },
+      "app": {
+        "home": {
+          "preparing_instance": "Wait, we are preparing everything"
+        }
       }
+    },
+  "flash_message": {
+    "app_home": {
+      "title": "Caution",
+      "description": "For security the automation only continues to run on this screen, you can minimize it as well."
     }
+  }
 }

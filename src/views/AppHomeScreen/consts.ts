@@ -14,4 +14,10 @@
  * limitations under the License.
  */
 
-declare let global: any;
+import {QRCodeProps} from 'react-native-qrcode-svg';
+
+export const QRCodeSettings = {
+  logoSize: 100,
+  size: 200,
+  ecl: 'H',
+} as QRCodeProps;
