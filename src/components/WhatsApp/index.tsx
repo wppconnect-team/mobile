@@ -137,7 +137,6 @@ const WhatsApp = () => {
       userAgent={userAgent}
       cacheEnabled={true}
       domStorageEnabled={true}
-      useWebView2={true}
       injectedJavaScript={injectJS}
       onNavigationStateChange={event => {
         if (

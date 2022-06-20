@@ -11,9 +11,6 @@ interface ConfigScreenProps {
 }
 
 class ConfigScreen extends Component<ConfigScreenProps, {}> {
-  onSettingsPressed = () => {
-    console.log('ok');
-  };
   render() {
     return (
       <ScrollView

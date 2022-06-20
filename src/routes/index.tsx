@@ -31,7 +31,7 @@ class RouteContainer extends Component<
           initialRouteName={this.initialRouteName}
           screenOptions={{
             headerShown: false,
-            gestureEnabled: true,
+            animation: 'none',
           }}>
           <Stack.Screen name={views.Home} component={HomeScreen} />
           <Stack.Screen name={views.AppHome} component={AppHomeScreen} />
