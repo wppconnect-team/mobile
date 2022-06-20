@@ -16,12 +16,37 @@
 
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {AuthCode} from 'types/wajs/conn';
+import {eventsType as WBViewEventsTp} from 'components/WhatsApp/consts';
+
+export interface WaJSConfig {
+  deviceName: string;
+  liveLocationLimit: number;
+  disableGoogleAnalytics: boolean;
+}
+
+export interface WaJSMobileConfig {
+  server: {
+    // todo: Add possibility to access a server with authentication
+    host: string;
+    port: number;
+
+    // Events that will be listened to and sent to the server
+    // Currently using "onAny" to capture events, in the future will this be a problem?
+    listenWa: 'chat.new_message' | null;
+
+    // Events provided by WebView
+    listenInstance: WBViewEventsTp;
+  };
+}
 
 export interface WaJsState {
   isAuthenticted: boolean;
   authcode?: AuthCode | null;
   webpack: {
     ready: boolean;
+  };
+  config: {
+    wajs: WaJSConfig;
   };
 }
 

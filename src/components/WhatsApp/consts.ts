@@ -40,7 +40,26 @@ export const deviceName = 'WPPConnect';
 export const liveLocationLimit = 10;
 export const disableGoogleAnalytics = false;
 
-export const events = {
+export type eventsType =
+  | 'whatsapp.message'
+  | 'whatsapp.error'
+  | 'whatsapp.contentprocessdidterminate'
+  | 'whatsapp.contentsizechange'
+  | 'whatsapp.custommenuselection'
+  | 'whatsapp.onfiledownload'
+  | 'whatsapp.httperror'
+  | 'whatsapp.load'
+  | 'whatsapp.loadend'
+  | 'whatsapp.loadprogress'
+  | 'whatsapp.loadstart'
+  | 'whatsapp.renderprocessgone'
+  | 'whatsapp.scroll';
+
+interface eventsInterface {
+  [name: string]: eventsType;
+}
+
+export const events: eventsInterface = {
   onMessage: 'whatsapp.message',
   onError: 'whatsapp.error',
   onContentProcessDidTerminate: 'whatsapp.contentprocessdidterminate',

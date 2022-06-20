@@ -33,7 +33,7 @@ public class MainApplication extends Application implements ReactApplication {
                     List<ReactPackage> packages = new PackageList(this).getPackages();
                     // Packages that cannot be autolinked yet can be added manually here, for example:
                     // packages.add(new MyReactNativePackage());
-                    //packages.add(new RNSharePackage());
+                    // packages.add(new RNSharePackage());
                     return packages;
                 }
 
@@ -43,8 +43,7 @@ public class MainApplication extends Application implements ReactApplication {
                 }
             };
 
-    private final ReactNativeHost mNewArchitectureNativeHost =
-            new MainApplicationReactNativeHost(this);
+    private final ReactNativeHost mNewArchitectureNativeHost = new MainApplicationReactNativeHost(this);
 
   @Override
   public ReactNativeHost getReactNativeHost() {
@@ -94,5 +93,4 @@ public class MainApplication extends Application implements ReactApplication {
       }
     }
   }
-
 }

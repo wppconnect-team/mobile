@@ -139,6 +139,7 @@ const mapStateToProps = (state: any) => {
     authcode: state?.wajs?.authcode,
     isAuthenticted: state.wajs?.isAuthenticted,
     webpack: state.wajs?.webpack,
+    config: state.wajs?.config
   };
 };
 

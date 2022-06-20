@@ -16,7 +16,7 @@
 
 import React, {Component} from 'react';
 import {AppBar, HStack, IconButton} from '@react-native-material/core';
-import Icon from '@expo/vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {NavigationScreenProp} from 'react-navigation';
 import {Settings} from 'consts/views';
 
