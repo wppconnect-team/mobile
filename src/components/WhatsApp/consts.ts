@@ -20,7 +20,7 @@ export const userAgent =
   'Mozilla/5.0 (Linux; Win64; x64; rv:46.0) Gecko/20100101 Firefox/68.0';
 export const whatsAppWebURL = 'https://web.whatsapp.com/🌎/en/';
 export const waJsURL =
-  'https://github.com/wppconnect-team/wa-js/releases/download/nightly/wppconnect-wa.js';
+  'https://github.com/wppconnect-team/wa-js/releases/latest/download/wppconnect-wa.js';
 export const injectJS = `
 (function () {
   // Disable zooming in (textinput focus zoom messes up ux)
