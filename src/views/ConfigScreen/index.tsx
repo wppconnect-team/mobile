@@ -52,38 +52,85 @@ class ConfigScreen extends Component<ConfigScreenProps, {}> {
           />
           <Stack fill spacing={4} style={styles.stack}>
             <Surface elevation={2} category="medium" style={styles.surface}>
-              <Text variant={'h6'}>WA-JS</Text>
+              <Text variant={'h6'}>
+                {translate('view.config.stack.wajs.title', {
+                  defaultValue: 'WA-JS',
+                })}
+              </Text>
               <Text variant={'caption'}>
-                Configurações básicas utilizadas na instância
+                {translate('view.config.stack.wajs.caption', {
+                  defaultValue: 'Basic settings used in the instance',
+                })}
               </Text>
               <TextInput
                 variant="outlined"
-                label="Nome do Dispositivo"
-                helperText={
-                  'Este nome é oque aparece nos "Dispotivos Conectados"'
-                }
-                placeholder={'WppConnect'}
+                label={translate(
+                  'view.config.stack.wajs.inputs.device_name.label',
+                  {
+                    defaultValue: 'Device Name',
+                  },
+                )}
+                helperText={translate(
+                  'view.config.stack.wajs.inputs.device_name.helperText',
+                  {
+                    defaultValue:
+                      'This name is what appears in the "Connected Devices"',
+                  },
+                )}
+                placeholder={translate(
+                  'view.config.stack.wajs.inputs.device_name.placeholder',
+                  {
+                    defaultValue: 'WppConnect',
+                  },
+                )}
                 style={styles.textInput}
               />
               <TextInput
                 variant="outlined"
-                label="Limite de localização em tempo real"
-                helperText={
-                  'Número de últimos chats para verificar a localização ao vivo após o recarregamento de uma página'
-                }
+                label={translate(
+                  'view.config.stack.wajs.inputs.real_time_location.label',
+                  {
+                    defaultValue: 'Real-time location limit',
+                  },
+                )}
+                helperText={translate(
+                  'view.config.stack.wajs.inputs.real_time_location.helperText',
+                  {
+                    defaultValue:
+                      'Number of last chats to check live location after reloading a page',
+                  },
+                )}
                 style={styles.textInput}
                 keyboardType={'numeric'}
               />
               <TextInput
                 variant="outlined"
-                label="ID do Google Analytics"
-                helperText={'Identificação do seu tracker no Google Analytics'}
-                placeholder={'G-SEUTRACKER'}
+                label={translate('view.config.stack.wajs.inputs.ga_id.label', {
+                  defaultValue: 'Google Analytics ID',
+                })}
+                helperText={translate(
+                  'view.config.stack.wajs.inputs.ga_id.helperText',
+                  {
+                    defaultValue:
+                      'Identification of your tracker in Google Analytics',
+                  },
+                )}
+                placeholder={translate(
+                  'view.config.stack.wajs.inputs.ga_id.placeholder',
+                  {
+                    defaultValue: 'G-YOURTRACKER',
+                  },
+                )}
                 style={styles.textInput}
               />
               <>
                 <ListItem
-                  title="Desativar Google Analytics"
+                  title={translate(
+                    'view.config.stack.wajs.inputs.disable_ga.title',
+                    {
+                      defaultValue: 'Deactivate Google Analytics',
+                    },
+                  )}
                   trailing={props => <Switch value={false} disabled />}
                 />
               </>
@@ -98,7 +145,7 @@ class ConfigScreen extends Component<ConfigScreenProps, {}> {
                 placeholder={'wss://seu-servidor'}
                 label="URL de Socket"
                 helperText="Endereço do servidor Socket que fará a comunicação com o dispositivo"
-                style={{margin: 16}}
+                style={styles.textInput}
               />
               <>
                 {/* todo: Adicionar possibilidade de ativar um servidor junto a aplicação */}

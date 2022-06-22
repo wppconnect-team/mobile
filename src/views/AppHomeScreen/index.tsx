@@ -44,6 +44,7 @@ class AppHomeScreen extends Component<AppHomeScreenProps, {}> {
     webviewRef: React.createRef<WebView>(),
     refUpdated: false,
   };
+
   constructor(props: any) {
     super(props);
     DeviceEventEmitter.addListener('whatsapp.updateref', this.updateRef);

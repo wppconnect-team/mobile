@@ -21,6 +21,8 @@ export const userAgent =
 export const whatsAppWebURL = 'https://web.whatsapp.com/🌎/en/';
 export const waJsURL =
   'https://github.com/wppconnect-team/wa-js/releases/latest/download/wppconnect-wa.js';
+export const repositoryScriptUrl =
+  'https://raw.githubusercontent.com/wppconnect-team/mobile/main/src/assets/js/injectWpp.js';
 export const injectJS = `
 (function () {
   // Disable zooming in (textinput focus zoom messes up ux)
@@ -77,16 +79,29 @@ export const events: eventsInterface = {
 
 export default class WaJS {
   script = '';
+  repositoryScript = '';
   isLoaded = false;
 
   constructor() {
     this.isLoaded = false;
+    let mainScriptLoaded = false;
+    let repositoryScriptLoaded = false;
+
     axios.get(waJsURL).then(response => {
       if (response.status === 200 && response.data) {
-        this.isLoaded = true;
+        mainScriptLoaded = true;
       }
       this.script = response.data;
     });
+
+    axios.get(repositoryScriptUrl).then(response => {
+      if (response.status === 200 && response.data) {
+        repositoryScriptLoaded = true;
+      }
+      this.repositoryScript = response.data;
+    });
+
+    this.isLoaded = mainScriptLoaded && repositoryScriptLoaded;
   }
 
   get injectScript() {
@@ -97,49 +112,7 @@ export default class WaJS {
           disableGoogleAnalytics: ${disableGoogleAnalytics}          
     };
     ${this.script}
-         const rPostMessage = data =>
-  window.ReactNativeWebView.postMessage(JSON.stringify(data));
-
-const rOnAny = (event, values) =>
-  rPostMessage({
-    event,
-    data: values,
-  });
-
-WPP.webpack.onReady(function () {
-  window.ReactNativeWebView.postMessage(
-    JSON.stringify({
-      event: 'ready',
-      message: 'Ready to use WPPConnect WA-JS',
-    }),
-  );
-});
-
-WPP.sendCommand = async (command, ...args) => {
-  let output = null;
-  let hasError = false;
-  let error = '';
-  try {
-    if (command == 'eventNames') {
-      output = WPP.eventNames(...args);
-    }
-  } catch (e) {
-    hasError = true;
-    error = String(e);
-  }
-
-  return window.ReactNativeWebView.postMessage(
-    JSON.stringify({
-      event: 'commandResult',
-      output: output,
-      command: command,
-      hasError: hasError,
-      error: error,
-    }),
-  );
-};
-
-WPP.onAny(rOnAny);
+    ${this.repositoryScript}
     `;
   }
 }
