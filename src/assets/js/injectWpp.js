@@ -46,10 +46,10 @@ WPP.getQRCode = () => {
   if (WPP.conn.isIdle()) {
     WPP.conn.refreshQR();
   }
-  let dataElement = document.querySelector(
-    '#app > div > div > div.landing-window > div.landing-main > div > div._25pwu > div',
-  );
+
   let element = document.querySelector('canvas[aria-label="Scan me!"]');
+  let dataElement = element && element.closest('[data-ref]');
+
   if (element && dataElement) {
     rPostMessage({
       event: 'qrcode',
