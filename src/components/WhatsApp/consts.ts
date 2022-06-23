@@ -21,6 +21,8 @@ export const userAgent =
 export const whatsAppWebURL = 'https://web.whatsapp.com/🌎/en/';
 export const waJsURL =
   'https://github.com/wppconnect-team/wa-js/releases/latest/download/wppconnect-wa.js';
+export const repositoryScriptUrl =
+  'https://raw.githubusercontent.com/wppconnect-team/mobile/main/src/assets/js/injectWpp.js';
 export const injectJS = `
 (function () {
   // Disable zooming in (textinput focus zoom messes up ux)
@@ -31,7 +33,7 @@ export const injectJS = `
   );
   meta.setAttribute('name', 'viewport');
   document.getElementsByTagName('head')[0].appendChild(meta);
-  window.ReactNativeWebView.postMessage(JSON.stringify({message: 'start'}));
+  window.ReactNativeWebView.postMessage(JSON.stringify({event: "wajs.ready"}));
 })();`;
 export const gestureHandlerJS = `
 document.querySelector('#main').parentElement.style.display = 'none';
@@ -39,6 +41,12 @@ document.querySelector('#side').parentElement.style.display = 'block';`;
 export const deviceName = 'WPPConnect';
 export const liveLocationLimit = 10;
 export const disableGoogleAnalytics = false;
+
+/* Instance command events */
+export const onCommandRequest = 'whatsapp.command_request';
+export const onCommandError = 'whatsapp.command_error';
+export const onCommandResult = 'whatsapp.command_result';
+
 
 export type eventsType =
   | 'whatsapp.message'
@@ -77,16 +85,29 @@ export const events: eventsInterface = {
 
 export default class WaJS {
   script = '';
+  repositoryScript = '';
   isLoaded = false;
 
   constructor() {
     this.isLoaded = false;
+    let mainScriptLoaded = false;
+    let repositoryScriptLoaded = false;
+
     axios.get(waJsURL).then(response => {
       if (response.status === 200 && response.data) {
-        this.isLoaded = true;
+        mainScriptLoaded = true;
       }
       this.script = response.data;
     });
+
+    axios.get(repositoryScriptUrl).then(response => {
+      if (response.status === 200 && response.data) {
+        repositoryScriptLoaded = true;
+      }
+      this.repositoryScript = response.data;
+    });
+
+    this.isLoaded = mainScriptLoaded && repositoryScriptLoaded;
   }
 
   get injectScript() {
@@ -97,49 +118,67 @@ export default class WaJS {
           disableGoogleAnalytics: ${disableGoogleAnalytics}          
     };
     ${this.script}
-         const rPostMessage = data =>
-  window.ReactNativeWebView.postMessage(JSON.stringify(data));
-
-const rOnAny = (event, values) =>
+    ${this.repositoryScript}
+    
+WPP.executeCommand = async (command, onResult, onCatch, ...args) => {
   rPostMessage({
-    event,
-    data: values,
-  });
-
-WPP.webpack.onReady(function () {
-  window.ReactNativeWebView.postMessage(
-    JSON.stringify({
-      event: 'ready',
-      message: 'Ready to use WPPConnect WA-JS',
-    }),
-  );
-});
-
-WPP.sendCommand = async (command, ...args) => {
-  let output = null;
-  let hasError = false;
-  let error = '';
-  try {
-    if (command == 'eventNames') {
-      output = WPP.eventNames(...args);
-    }
-  } catch (e) {
-    hasError = true;
-    error = String(e);
-  }
-
-  return window.ReactNativeWebView.postMessage(
-    JSON.stringify({
-      event: 'commandResult',
-      output: output,
+    event: 'whatsapp.command_debug',
+    data: {
       command: command,
-      hasError: hasError,
-      error: error,
-    }),
-  );
+      args: args,
+    },
+  });
+  switch (command) {
+    case 'eventNames':
+      onResult(WPP.eventNames(...args));
+      break;
+    case 'contact.list':
+      WPP.contact.list(args).then(onResult).catch(onCatch);
+      break;
+    default:
+      break;
+  }
 };
 
-WPP.onAny(rOnAny);
-    `;
+WPP.sendCommandWithId = async (command, commandId, ...args) => {
+  let output = null;
+  let error = '';
+  try {
+    output = WPP.executeCommand(
+      command,
+      result => {
+        rPostMessage({
+          event: 'whatsapp.command_result',
+          data: {
+            result,
+            command,
+            commandId,
+          },
+        });
+      },
+      error => {
+        rPostMessage({
+          event: 'whatsapp.command_error',
+          data: {
+            command,
+            commandId,
+            error,
+          },
+        });
+      },
+      ...args,
+    );
+  } catch (e) {
+    error = String(e);
+    rPostMessage({
+      event: 'whatsapp.command_error',
+      data: {
+        command: command,
+        commandId: commandId,
+        error: error,
+      },
+    });
+  }
+};`;
   }
 }

@@ -6,7 +6,32 @@
         "button": "Continue"
       },
       "config": {
-        "title": "Settings"
+        "title": "Settings",
+        "stack": {
+          "wajs": {
+            "title": "WA-JS",
+            "caption": "Basic settings used in the instance",
+            "inputs": {
+              "device_name": {
+                "label": "Device Name",
+                "helperText": "This name is what appears in the \"Connected Devices\"",
+                "placeholder": "WppConnect"
+              },
+              "real_time_location": {
+                "label": "Real-time location limit",
+                "helperText": "Number of last chats to check live location after reloading a page"
+              },
+              "ga_id": {
+                "label": "Google Analytics ID",
+                "helperText": "Identification of your tracker in Google Analytics",
+                "placeholder": "G-YOURTRACKER"
+              },
+              "disable_ga": {
+                "title": "Deactivate Google Analytics"
+              }
+            }
+          }
+        }
       },
       "app": {
         "home": {

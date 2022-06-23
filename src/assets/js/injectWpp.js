@@ -18,6 +18,15 @@
 // Undefined variables are disabled in this file only temporarily,
 // the intention is that this file is accessed inside the repository and then cached.
 
+/**
+ This script is called by the application at:
+ src/components/WhatsApp/consts.ts -> repositoryScript(){...}
+
+ :::Latest changes:::
+ (22/06/2022) - Removed the QRCode reading, the capture event is provided by WA-JS that does it automatically.
+                Visible in https://github.com/wppconnect-team/mobile/blob/main/src/components/WhatsApp/index.tsx#L75
+ **/
+
 const rPostMessage = data =>
   window.ReactNativeWebView.postMessage(JSON.stringify(data));
 
@@ -34,42 +43,14 @@ WPP.webpack.onReady(function () {
       message: 'Ready to use WPPConnect WA-JS',
     }),
   );
-  WPP.getQRCode();
 });
-WPP.getQRCode = () => {
-  if (WPP.conn.isAuthenticated()) {
-    WPP.conn.setKeepAlive();
-    clearInterval(WPP.getQrCodeInterval);
-    return true;
-  }
-
-  if (WPP.conn.isIdle()) {
-    WPP.conn.refreshQR();
-  }
-
-  let element = document.querySelector('canvas[aria-label="Scan me!"]');
-  let dataElement = element && element.closest('[data-ref]');
-
-  if (element && dataElement) {
-    rPostMessage({
-      event: 'qrcode',
-      message: {
-        base64: element.toDataURL(),
-        data: dataElement.getAttribute('data-ref'),
-      },
-    });
-  }
-  setTimeout(WPP.getQRCode, 5000);
-};
-
-WPP.getQrCodeInterval = null;
 
 WPP.sendCommand = async (command, ...args) => {
   let output = null;
   let hasError = false;
   let error = '';
   try {
-    if (command === 'eventNames') {
+    if (command == 'eventNames') {
       output = WPP.eventNames(...args);
     }
   } catch (e) {
@@ -86,6 +67,67 @@ WPP.sendCommand = async (command, ...args) => {
       error: error,
     }),
   );
+};
+
+WPP.executeCommand = async (command, onResult, onCatch, ...args) => {
+  rPostMessage({
+    event: 'whatsapp.command_debug',
+    data: {
+      command: command,
+      args: args,
+    },
+  });
+  switch (command) {
+    case 'eventNames':
+      onResult(WPP.eventNames(...args));
+      break;
+    case 'contact.list':
+      WPP.contact.list(args).then(onResult).catch(onCatch);
+      break;
+    default:
+      break;
+  }
+};
+
+WPP.sendCommandWithId = async (command, commandId, ...args) => {
+  let output = null;
+  let error = '';
+  try {
+    output = WPP.executeCommand(
+      command,
+      result => {
+        rPostMessage({
+          event: 'whatsapp.command_result',
+          data: {
+            result,
+            command,
+            commandId,
+          },
+        });
+      },
+      error => {
+        rPostMessage({
+          event: 'whatsapp.command_error',
+          data: {
+            command,
+            commandId,
+            error,
+          },
+        });
+      },
+      ...args,
+    );
+  } catch (e) {
+    error = String(e);
+    rPostMessage({
+      event: 'whatsapp.command_error',
+      data: {
+        command: command,
+        commandId: commandId,
+        error: error,
+      },
+    });
+  }
 };
 
 WPP.onAny(rOnAny);
