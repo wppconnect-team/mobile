@@ -17,8 +17,7 @@
 import React, {useCallback} from 'react';
 import {AppBar, HStack, IconButton} from '@react-native-material/core';
 import {
-  DrawerActions,
-  DrawerActionType,
+
   useNavigation,
 } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -28,14 +27,13 @@ type Props = {
   title?: string;
   subtitle?: string;
   useGoBack?: boolean;
-  DrawerAction?: DrawerActionType;
+  navigation?: any;
 };
 
 const CustomAppBar = (props: Props) => {
-  const navigation = useNavigation();
-  const {title, subtitle, useGoBack} = props;
+  const {navigation, title, subtitle, useGoBack} = props;
   const openDrawer = useCallback(() => {
-    navigation.dispatch(DrawerActions.openDrawer());
+    
   }, []);
   return (
     <AppBar
@@ -66,7 +64,7 @@ const CustomAppBar = (props: Props) => {
               {...props}
               onPress={() => {
                 if (!useGoBack) {
-                  navigation?.navigate({key: Settings});
+                  navigation?.navigate(Settings);
                 }
               }}
             />

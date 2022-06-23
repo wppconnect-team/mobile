@@ -49,7 +49,7 @@ const AppHomeScreen = (
     instance: {
       contacts: {
         result: null,
-        hookId: '',
+        hookId: '' as string | number[]
       },
     }
   });
@@ -139,7 +139,9 @@ const AppHomeScreen = (
         direction={Directions.RIGHT}
         onHandlerStateChange={e => onHandlerStateChange(e)}>
         <View style={styles.view}>
-          <AppBar />
+          <AppBar
+            navigation={props.navigation}
+          />
           <View style={styles.containerView}>
             {props.isAuthenticted && props.webpack.ready
               ? authView()

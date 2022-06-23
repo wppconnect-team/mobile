@@ -45,6 +45,7 @@ const ConfigScreen = (
       contentContainerStyle={styles.scrollOuter}>
       <ScrollView style={styles.view}>
         <AppBar
+          navigation={props.navigation}
           subtitle={translate('view.config.title', {
             defaultValue: 'Settings',
           })}
