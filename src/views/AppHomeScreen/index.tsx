@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, {Component, RefObject} from 'react';
+import React, {Component, RefObject, useEffect} from 'react';
 import {StyleSheet, View, ScrollView, DeviceEventEmitter} from 'react-native';
 import {connect} from 'react-redux';
 import {
@@ -30,20 +30,42 @@ import {HandlerStateChangeEvent} from 'react-native-gesture-handler/lib/typescri
 import {showMessage} from 'react-native-flash-message';
 import translate from 'translations';
 import {WaJsState} from 'redux/reducer/wajs';
-import WhatsApp from 'components/WhatsApp';
+import WhatsApp, {
+  sendWhatsAppCommand,
+  WhatsAppCommandResult,
+} from 'components/WhatsApp';
 import AppBar from 'components/AppBar';
-import {gestureHandlerJS} from 'components/WhatsApp/consts';
+import {gestureHandlerJS, onCommandResult} from 'components/WhatsApp/consts';
 import {QRCodeSettings} from './consts';
+import uuid from 'react-native-uuid';
 
 interface AppHomeScreenProps extends WaJsState {
   navigation: NavigationScreenProp<any>;
 }
 
+interface AppHomeScreenState {
+  webviewRef: RefObject<WebView>;
+  refUpdated: boolean;
+  instance: {
+    contacts: {
+      result: any | null;
+      hookId: string;
+    };
+  };
+}
+
 class AppHomeScreen extends Component<AppHomeScreenProps, {}> {
-  state = {
+  state: AppHomeScreenState = {
     webviewRef: React.createRef<WebView>(),
     refUpdated: false,
+    instance: {
+      contacts: {
+        result: null,
+        hookId: '',
+      },
+    },
   };
+  private contactsUpdateInterval: number;
 
   constructor(props: any) {
     super(props);
@@ -58,7 +80,33 @@ class AppHomeScreen extends Component<AppHomeScreenProps, {}> {
       }),
       type: 'info',
     });
+    DeviceEventEmitter.addListener(
+      onCommandResult,
+      this.onWhatsAppCommandResult,
+    );
+
+    this.contactsUpdateInterval = setInterval(() => {
+      if (this.props.isAuthenticted && this.props.isWaJsReady) {
+        const {result, hookId} = this.state.instance.contacts;
+        if (result === null || result === []) {
+          this.updateContacts();
+        }
+      }
+    }, 5000);
   }
+
+  onWhatsAppCommandResult = (result: WhatsAppCommandResult) => {
+    if (result.commandId === this.state.instance.contacts.hookId) {
+      console.log(`Received result from ${result.command}`);
+      this.setState({
+        instance: {
+          contacts: {
+            result: result.result,
+          },
+        },
+      });
+    }
+  };
 
   onHandlerStateChange = (event: HandlerStateChangeEvent) => {
     if (event.nativeEvent.state === State.ACTIVE) {
@@ -77,7 +125,7 @@ class AppHomeScreen extends Component<AppHomeScreenProps, {}> {
 
   authView = () => <Text>{JSON.stringify(this.props)}</Text>;
   noAuthView = () =>
-    this.props.authcode ? (
+    this.props.authcode && !this.props.isAuthenticted ? (
       <QRCode value={this.props.authcode.fullCode} {...QRCodeSettings} />
     ) : (
       <View>
@@ -89,6 +137,22 @@ class AppHomeScreen extends Component<AppHomeScreenProps, {}> {
         </Text>
       </View>
     );
+
+  updateContacts = () => {
+    const hookId = uuid.v4();
+    this.setState({
+      instance: {
+        contacts: {
+          result: null,
+          hookId: hookId,
+        },
+      },
+    });
+    sendWhatsAppCommand({
+      command: 'contact.list',
+      commandId: String(hookId),
+    });
+  };
 
   render() {
     return (
@@ -113,25 +177,25 @@ class AppHomeScreen extends Component<AppHomeScreenProps, {}> {
   }
 }
 const styles = StyleSheet.create({
-  scrollOuter: {
-    width: '100%',
+  containerView: {
+    alignContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    padding: 50,
+  },
+  preparingInstance: {
+    marginTop: 25,
+    textAlign: 'center',
   },
   scroll: {
+    width: '100%',
+  },
+  scrollOuter: {
     width: '100%',
   },
   view: {
     flex: 1,
     position: 'relative',
-  },
-  preparingInstance: {
-    textAlign: 'center',
-    marginTop: 25,
-  },
-  containerView: {
-    padding: 50,
-    flex: 1,
-    alignItems: 'center',
-    alignContent: 'center',
   },
 });
 
@@ -140,7 +204,9 @@ const mapStateToProps = (state: any) => {
     authcode: state?.wajs?.authcode,
     isAuthenticted: state.wajs?.isAuthenticted,
     webpack: state.wajs?.webpack,
-    config: state.wajs?.config
+    config: state.wajs?.config,
+    isMainReady: state.wajs?.isMainReady,
+    isWaJsReady: state.wajs?.isWaJsReady,
   };
 };
 

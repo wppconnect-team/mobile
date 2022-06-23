@@ -42,6 +42,8 @@ export interface WaJSMobileConfig {
 
 export interface WaJsState {
   isAuthenticted: boolean;
+  isMainReady: boolean;
+  isWaJsReady: boolean;
   authcode?: AuthCode | null;
   webpack: {
     ready: boolean;
@@ -53,6 +55,8 @@ export interface WaJsState {
 
 const initialState = {
   isAuthenticted: false,
+  isMainReady: false,
+  isWaJsReady: false,
   authcode: null,
   webpack: {ready: false},
 } as WaJsState;
@@ -61,6 +65,12 @@ const waJsSlice = createSlice({
   name: 'wajs',
   initialState,
   reducers: {
+    setMainReady(state, action: PayloadAction<boolean>) {
+      state.isMainReady = action.payload;
+    },
+    setWaJsReady(state, action: PayloadAction<boolean>) {
+      state.isWaJsReady = action.payload;
+    },
     setAuthenticated(state, action: PayloadAction<boolean>) {
       state.isAuthenticted = action.payload;
     },
@@ -73,6 +83,11 @@ const waJsSlice = createSlice({
   },
 });
 
-export const {setAuthenticated, setAuthCode, setWebpackReady} =
-  waJsSlice.actions;
+export const {
+  setAuthenticated,
+  setAuthCode,
+  setWebpackReady,
+  setMainReady,
+  setWaJsReady,
+} = waJsSlice.actions;
 export default waJsSlice.reducer;

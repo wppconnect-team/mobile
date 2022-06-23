@@ -27,8 +27,6 @@
                 Visible in https://github.com/wppconnect-team/mobile/blob/main/src/components/WhatsApp/index.tsx#L75
  **/
 
-
-
 const rPostMessage = data =>
   window.ReactNativeWebView.postMessage(JSON.stringify(data));
 
@@ -69,6 +67,67 @@ WPP.sendCommand = async (command, ...args) => {
       error: error,
     }),
   );
+};
+
+WPP.executeCommand = async (command, onResult, onCatch, ...args) => {
+  rPostMessage({
+    event: 'whatsapp.command_debug',
+    data: {
+      command: command,
+      args: args,
+    },
+  });
+  switch (command) {
+    case 'eventNames':
+      onResult(WPP.eventNames(...args));
+      break;
+    case 'contact.list':
+      WPP.contact.list(args).then(onResult).catch(onCatch);
+      break;
+    default:
+      break;
+  }
+};
+
+WPP.sendCommandWithId = async (command, commandId, ...args) => {
+  let output = null;
+  let error = '';
+  try {
+    output = WPP.executeCommand(
+      command,
+      result => {
+        rPostMessage({
+          event: 'whatsapp.command_result',
+          data: {
+            result,
+            command,
+            commandId,
+          },
+        });
+      },
+      error => {
+        rPostMessage({
+          event: 'whatsapp.command_error',
+          data: {
+            command,
+            commandId,
+            error,
+          },
+        });
+      },
+      ...args,
+    );
+  } catch (e) {
+    error = String(e);
+    rPostMessage({
+      event: 'whatsapp.command_error',
+      data: {
+        command: command,
+        commandId: commandId,
+        error: error,
+      },
+    });
+  }
 };
 
 WPP.onAny(rOnAny);
