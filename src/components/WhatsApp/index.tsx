@@ -42,13 +42,14 @@ const waJS = new WaJS();
 
 const WhatsApp = () => {
   const dispatch = useDispatch();
-  const webviewRef = useRef<WebView>();
+  const webviewRef = useRef<WebView>(null);
+
   useEffect(() => {
     dispatch(setWebpackReady(false));
     dispatch(setAuthenticated(false));
     DeviceEventEmitter.emit('whatsapp.updateref', webviewRef);
 
-    DeviceEventEmitter.addListener('whatsapp.message', ev => {
+    const subscrib2 = DeviceEventEmitter.addListener('whatsapp.message', ev => {
       const {event, message} = ev;
       if (message === 'start') {
         webviewRef.current?.injectJavaScript(waJS.injectScript);
@@ -62,7 +63,11 @@ const WhatsApp = () => {
 
       console.debug(`[Emitter - WhatsApp.Message] -> ${JSON.stringify(ev)}`);
     });
-  });
+
+    return () => {
+      subscrib2.remove();
+    };
+  }, [dispatch]);
 
   const onMessage = React.useCallback(
     (nEvent: any) => {
@@ -84,7 +89,7 @@ const WhatsApp = () => {
               dispatch(setAuthenticated(false));
               break;
             default:
-              console.warn(`Unknown event "${event}"`);
+              console.log(`Unknown event "${event}"`);
           }
         }
         DeviceEventEmitter.emit(events.onMessage, nativeEvent);
@@ -97,57 +102,66 @@ const WhatsApp = () => {
     console.log(event);
     DeviceEventEmitter.emit(events.onError, event);
   }, []);
+
   const onContentProcessDidTerminate = React.useCallback((event: any) => {
     console.log(event);
     DeviceEventEmitter.emit(events.onContentProcessDidTerminate, event);
   }, []);
+
   const onContentSizeChange = React.useCallback((event: any) => {
     console.log(event);
     DeviceEventEmitter.emit(events.onContentSizeChange, event);
   }, []);
+
   const onCustomMenuSelection = React.useCallback((event: any) => {
     console.log(event);
     DeviceEventEmitter.emit(events.onCustomMenuSelection, event);
   }, []);
+
   const onFileDownload = React.useCallback((event: any) => {
     console.log(event);
     DeviceEventEmitter.emit(events.onFileDownload, event);
   }, []);
+
   const onHttpError = React.useCallback((event: any) => {
     console.log(event);
     DeviceEventEmitter.emit(events.onHttpError, event);
   }, []);
+
   const onLoad = React.useCallback((event: any) => {
     console.log(event);
     DeviceEventEmitter.emit(events.onLoad, event);
   }, []);
+
   const onLoadEnd = React.useCallback((event: any) => {
     console.log(event);
     DeviceEventEmitter.emit(events.onLoadEnd, event);
   }, []);
+
   const onLoadProgress = React.useCallback((event: any) => {
     console.log(event);
     DeviceEventEmitter.emit(events.onLoadProgress, event);
   }, []);
+
   const onLoadStart = React.useCallback((event: any) => {
     console.log(event);
     DeviceEventEmitter.emit(events.onLoadStart, event);
   }, []);
+
   const onRenderProcessGone = React.useCallback((event: any) => {
     console.log(event);
     DeviceEventEmitter.emit(events.onRenderProcessGone, event);
   }, []);
+
   const onScroll = React.useCallback((event: any) => {
     console.log(event);
     DeviceEventEmitter.emit(events.onScroll, event);
   }, []);
+
   const {height, width} = useWindowDimensions();
 
   return (
     <WebView
-      // Sim, fiquei com preguiça de descobrir como corrigir isso, desculpe :(
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       ref={webviewRef}
       source={{uri: whatsAppWebURL}}
       userAgent={userAgent}

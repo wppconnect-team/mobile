@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
+import {Appearance} from 'react-native';
+
 const colors = {
   bgHello: '#07e676',
   primary: 'rgb(109, 72, 229)',
-  absoluteWhite: '#fff',
+  absoluteWhite: Appearance.getColorScheme() === 'dark' ? '#fff' : '#000',
 };
 export const {bgHello, primary, absoluteWhite} = colors;
 export default colors;

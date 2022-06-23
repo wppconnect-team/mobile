@@ -14,65 +14,67 @@
  * limitations under the License.
  */
 
-import React, {Component} from 'react';
+import React, {useCallback} from 'react';
 import {AppBar, HStack, IconButton} from '@react-native-material/core';
+import {
+  DrawerActions,
+  DrawerActionType,
+  useNavigation,
+} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {NavigationScreenProp} from 'react-navigation';
 import {Settings} from 'consts/views';
 
-interface AppBarProps {
+type Props = {
   title?: string;
   subtitle?: string;
-  navigation?: NavigationScreenProp<any>;
   useGoBack?: boolean;
-}
+  DrawerAction?: DrawerActionType;
+};
 
-class CustomAppBar extends Component<AppBarProps, {}> {
-  public static defaultProps = {
-    title: 'Wppconnect',
-    subtitle: null,
-    useGoBack: false,
-  };
-
-  render() {
-    return (
-      <AppBar
-        title={this.props.title}
-        subtitle={this.props.subtitle}
-        leading={props =>
-          this.props.useGoBack ? (
+const CustomAppBar = (props: Props) => {
+  const navigation = useNavigation();
+  const {title, subtitle, useGoBack} = props;
+  const openDrawer = useCallback(() => {
+    navigation.dispatch(DrawerActions.openDrawer());
+  }, []);
+  return (
+    <AppBar
+      title={title}
+      subtitle={subtitle}
+      leading={props =>
+        useGoBack ? (
+          <IconButton
+            icon={props => <Icon name="arrow-left" {...props} />}
+            {...props}
+            onPress={() => {
+              navigation?.goBack();
+            }}
+          />
+        ) : (
+          <IconButton
+            icon={props => <Icon name="menu" {...props} />}
+            onPress={openDrawer}
+            {...props}
+          />
+        )
+      }
+      trailing={props =>
+        useGoBack ? null : (
+          <HStack>
             <IconButton
-              icon={props => <Icon name="arrow-left" {...props} />}
+              icon={props => <Icon name="dots-vertical" {...props} />}
               {...props}
               onPress={() => {
-                this.props.navigation?.goBack();
+                if (!useGoBack) {
+                  navigation?.navigate({key: Settings});
+                }
               }}
             />
-          ) : (
-            <IconButton
-              icon={props => <Icon name="menu" {...props} />}
-              {...props}
-            />
-          )
-        }
-        trailing={props =>
-          this.props.useGoBack ? null : (
-            <HStack>
-              <IconButton
-                icon={props => <Icon name="dots-vertical" {...props} />}
-                {...props}
-                onPress={() => {
-                  if (!this.props.useGoBack) {
-                    this.props.navigation?.navigate(Settings);
-                  }
-                }}
-              />
-            </HStack>
-          )
-        }
-      />
-    );
-  }
-}
+          </HStack>
+        )
+      }
+    />
+  );
+};
 
 export default CustomAppBar;

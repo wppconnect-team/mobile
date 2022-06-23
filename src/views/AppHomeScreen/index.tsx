@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import React, {Component, RefObject} from 'react';
-import {StyleSheet, View, ScrollView, DeviceEventEmitter} from 'react-native';
+import React, {useRef} from 'react';
+import {StyleSheet, View, ScrollView} from 'react-native';
 import {connect} from 'react-redux';
 import {
   FlingGestureHandler,
@@ -25,9 +25,7 @@ import {
 import {NavigationScreenProp} from 'react-navigation';
 import {ActivityIndicator, Text} from '@react-native-material/core';
 import QRCode from 'react-native-qrcode-svg';
-import WebView from 'react-native-webview';
 import {HandlerStateChangeEvent} from 'react-native-gesture-handler/lib/typescript/handlers/gestureHandlerCommon';
-import {showMessage} from 'react-native-flash-message';
 import translate from 'translations';
 import {WaJsState} from 'redux/reducer/wajs';
 import WhatsApp from 'components/WhatsApp';
@@ -39,45 +37,21 @@ interface AppHomeScreenProps extends WaJsState {
   navigation: NavigationScreenProp<any>;
 }
 
-class AppHomeScreen extends Component<AppHomeScreenProps, {}> {
-  state = {
-    webviewRef: React.createRef<WebView>(),
-    refUpdated: false,
-  };
-  constructor(props: any) {
-    super(props);
-    DeviceEventEmitter.addListener('whatsapp.updateref', this.updateRef);
-    showMessage({
-      message: translate('flash_message.app_home.title', {
-        defaultValue: 'Caution',
-      }),
-      description: translate('flash_message.app_home.description', {
-        defaultValue:
-          'For security the automation only continues to run on this screen, you can minimize it as well.',
-      }),
-      type: 'info',
-    });
-  }
+const AppHomeScreen = (
+  props: AppHomeScreenProps | Readonly<AppHomeScreenProps>,
+) => {
+  const webviewRef = useRef<any>(null);
 
-  onHandlerStateChange = (event: HandlerStateChangeEvent) => {
+  const onHandlerStateChange = (event: HandlerStateChangeEvent) => {
     if (event.nativeEvent.state === State.ACTIVE) {
-      this.state.webviewRef?.current?.injectJavaScript(gestureHandlerJS);
+      webviewRef?.current?.injectJavaScript(gestureHandlerJS);
     }
   };
 
-  updateRef = (ref: RefObject<WebView>) => {
-    if (!this.state.refUpdated) {
-      this.setState({
-        webviewRef: ref,
-        refUpdated: true,
-      });
-    }
-  };
-
-  authView = () => <Text>{JSON.stringify(this.props)}</Text>;
-  noAuthView = () =>
-    this.props.authcode ? (
-      <QRCode value={this.props.authcode.fullCode} {...QRCodeSettings} />
+  const authView = () => <Text>{JSON.stringify(props)}</Text>;
+  const noAuthView = () => {
+    return props.authcode ? (
+      <QRCode value={props.authcode.fullCode} {...QRCodeSettings} />
     ) : (
       <View>
         <ActivityIndicator size="large" />
@@ -88,49 +62,49 @@ class AppHomeScreen extends Component<AppHomeScreenProps, {}> {
         </Text>
       </View>
     );
+  };
 
-  render() {
-    return (
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.scrollOuter}>
-        <FlingGestureHandler
-          direction={Directions.RIGHT}
-          onHandlerStateChange={e => this.onHandlerStateChange(e)}>
-          <View style={styles.view}>
-            <AppBar navigation={this.props.navigation} />
-            <View style={styles.containerView}>
-              {this.props.isAuthenticted && this.props.webpack.ready
-                ? this.authView()
-                : this.noAuthView()}
-            </View>
-            <WhatsApp />
+  return (
+    <ScrollView
+      style={styles.scroll}
+      contentContainerStyle={styles.scrollOuter}>
+      <FlingGestureHandler
+        direction={Directions.RIGHT}
+        onHandlerStateChange={e => onHandlerStateChange(e)}>
+        <View style={styles.view}>
+          <AppBar />
+          <View style={styles.containerView}>
+            {props.isAuthenticted && props.webpack.ready
+              ? authView()
+              : noAuthView()}
           </View>
-        </FlingGestureHandler>
-      </ScrollView>
-    );
-  }
-}
+          <WhatsApp />
+        </View>
+      </FlingGestureHandler>
+    </ScrollView>
+  );
+};
+
 const styles = StyleSheet.create({
-  scrollOuter: {
-    width: '100%',
+  containerView: {
+    alignContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    padding: 50,
+  },
+  preparingInstance: {
+    marginTop: 25,
+    textAlign: 'center',
   },
   scroll: {
+    width: '100%',
+  },
+  scrollOuter: {
     width: '100%',
   },
   view: {
     flex: 1,
     position: 'relative',
-  },
-  preparingInstance: {
-    textAlign: 'center',
-    marginTop: 25,
-  },
-  containerView: {
-    padding: 50,
-    flex: 1,
-    alignItems: 'center',
-    alignContent: 'center',
   },
 });
 
@@ -139,7 +113,7 @@ const mapStateToProps = (state: any) => {
     authcode: state?.wajs?.authcode,
     isAuthenticted: state.wajs?.isAuthenticted,
     webpack: state.wajs?.webpack,
-    config: state.wajs?.config
+    config: state.wajs?.config,
   };
 };
 

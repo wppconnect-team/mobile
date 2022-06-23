@@ -36,93 +36,87 @@ interface ConfigScreenProps {
   navigation: NavigationScreenProp<any>;
 }
 
-class ConfigScreen extends Component<ConfigScreenProps, {}> {
-  render() {
-    return (
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.scrollOuter}>
-        <ScrollView style={styles.view}>
-          <AppBar
-            subtitle={translate('view.config.title', {
-              defaultValue: 'Settings',
-            })}
-            navigation={this.props.navigation}
-            useGoBack={true}
-          />
-          <Stack fill spacing={4} style={styles.stack}>
-            <Surface elevation={2} category="medium" style={styles.surface}>
-              <Text variant={'h6'}>WA-JS</Text>
-              <Text variant={'caption'}>
-                Configurações básicas utilizadas na instância
-              </Text>
-              <TextInput
-                variant="outlined"
-                label="Nome do Dispositivo"
-                helperText={
-                  'Este nome é oque aparece nos "Dispotivos Conectados"'
-                }
-                placeholder={'WppConnect'}
-                style={styles.textInput}
-              />
-              <TextInput
-                variant="outlined"
-                label="Limite de localização em tempo real"
-                helperText={
-                  'Número de últimos chats para verificar a localização ao vivo após o recarregamento de uma página'
-                }
-                style={styles.textInput}
-                keyboardType={'numeric'}
-              />
-              <TextInput
-                variant="outlined"
-                label="ID do Google Analytics"
-                helperText={'Identificação do seu tracker no Google Analytics'}
-                placeholder={'G-SEUTRACKER'}
-                style={styles.textInput}
-              />
-              <>
-                <ListItem
-                  title="Desativar Google Analytics"
-                  trailing={props => <Switch value={false} disabled />}
-                />
-              </>
-            </Surface>
-            <Surface elevation={2} category="medium" style={styles.surface}>
-              <Text variant={'h6'}>Avançado</Text>
-              <Text variant={'caption'}>
-                Configurações para permitir a automatização remota da instância
-              </Text>
-              <TextInput
-                variant="standard"
-                placeholder={'wss://seu-servidor'}
-                label="URL de Socket"
-                helperText="Endereço do servidor Socket que fará a comunicação com o dispositivo"
-                style={{margin: 16}}
-              />
-              <>
-                {/* todo: Adicionar possibilidade de ativar um servidor junto a aplicação */}
-                <ListItem
-                  title="API"
-                  overline={'Servidor Local'}
-                  secondaryText={
-                    'Permitir comandos remotos no dispositivo via Socket'
-                  }
-                  trailing={props => <Switch value={false} />}
-                />
-              </>
-            </Surface>
-          </Stack>
-        </ScrollView>
-        <FAB
-          style={styles.fab}
-          icon={props => <Icon name="content-save" {...props} />}
-          color="primary"
+const ConfigScreen = (
+  props: ConfigScreenProps | Readonly<ConfigScreenProps>,
+) => {
+  return (
+    <ScrollView
+      style={styles.scroll}
+      contentContainerStyle={styles.scrollOuter}>
+      <ScrollView style={styles.view}>
+        <AppBar
+          subtitle={translate('view.config.title', {
+            defaultValue: 'Settings',
+          })}
+          useGoBack={true}
         />
+        <Stack fill spacing={4} style={styles.stack}>
+          <Surface elevation={2} category="medium" style={styles.surface}>
+            <Text variant={'h6'}>WA-JS</Text>
+            <Text variant={'caption'}>
+              Configurações básicas utilizadas na instância
+            </Text>
+            <TextInput
+              variant="outlined"
+              label="Nome do Dispositivo"
+              helperText={
+                'Este nome é oque aparece nos "Dispotivos Conectados"'
+              }
+              placeholder={'WppConnect'}
+              style={styles.textInput}
+            />
+            <TextInput
+              variant="outlined"
+              label="Limite de localização em tempo real"
+              helperText={
+                'Número de últimos chats para verificar a localização ao vivo após o recarregamento de uma página'
+              }
+              style={styles.textInput}
+              keyboardType={'numeric'}
+            />
+            <TextInput
+              variant="outlined"
+              label="ID do Google Analytics"
+              helperText={'Identificação do seu tracker no Google Analytics'}
+              placeholder={'G-SEUTRACKER'}
+              style={styles.textInput}
+            />
+            <>
+              <ListItem
+                title="Desativar Google Analytics"
+                trailing={() => <Switch value={false} disabled />}
+              />
+            </>
+          </Surface>
+          <Surface elevation={2} category="medium" style={styles.surface}>
+            <Text variant={'h6'}>Avançado</Text>
+            <Text variant={'caption'}>
+              Configurações para permitir a automatização remota da instância
+            </Text>
+            <TextInput
+              variant="standard"
+              placeholder={'wss://seu-servidor'}
+              label="URL de Socket"
+              helperText="Endereço do servidor Socket que fará a comunicação com o dispositivo"
+              style={{margin: 16}}
+            />
+            <>
+              {/* todo: Adicionar possibilidade de ativar um servidor junto a aplicação */}
+              <ListItem
+                title="API"
+                overline={'Servidor Local'}
+                secondaryText={
+                  'Permitir comandos remotos no dispositivo via Socket'
+                }
+                trailing={() => <Switch value={false} />}
+              />
+            </>
+          </Surface>
+        </Stack>
       </ScrollView>
-    );
-  }
-}
+    </ScrollView>
+  );
+};
 
 const styles = StyleSheet.create({
   fab: {

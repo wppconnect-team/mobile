@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, {Component} from 'react';
+import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {connect} from 'react-redux';
@@ -23,40 +23,22 @@ import {HomeScreen, AppHomeScreen, ConfigScreen} from 'views';
 
 const Stack = createNativeStackNavigator();
 
-class RouteContainer extends Component<
-  | {
-      isFirstTime?: boolean;
-    }
-  | any
-> {
-  state = {
-    isFirstTime: this.props.isFirstTime,
-  };
-  constructor(props: any) {
-    super(props);
-  }
-
-  get initialRouteName(): string {
-    return this.state.isFirstTime ? 'Home' : 'AppHome';
-  }
-
-  render() {
-    return (
-      <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName={this.initialRouteName}
-          screenOptions={{
-            headerShown: false,
-            animation: 'none',
-          }}>
-          <Stack.Screen name={views.Home} component={HomeScreen} />
-          <Stack.Screen name={views.AppHome} component={AppHomeScreen} />
-          <Stack.Screen name={views.Settings} component={ConfigScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    );
-  }
-}
+const RouteContainer = (props: any) => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName={props.isFirstTime ? 'Home' : 'AppHome'}
+        screenOptions={{
+          headerShown: false,
+          animation: 'none',
+        }}>
+        <Stack.Screen name={views.Home} component={HomeScreen} />
+        <Stack.Screen name={views.AppHome} component={AppHomeScreen} />
+        <Stack.Screen name={views.Settings} component={ConfigScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
 
 const mapStateToProps = (state: any) => {
   return {
