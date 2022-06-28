@@ -60,6 +60,14 @@ const initialState = {
   isWaJsReady: false,
   authcode: null,
   webpack: {ready: false},
+  config: {
+    wajs: {
+      deviceName: 'WPPConnect',
+      disableGoogleAnalytics: false,
+      googleAnalyticsId: null,
+      liveLocationLimit: 10,
+    },
+  },
 } as WaJsState;
 
 const WaJsAppSlice = createSlice({
@@ -93,6 +101,6 @@ export const {
   setWebpackReady,
   setMainReady,
   setWaJsReady,
-  setWaJsConfig
+  setWaJsConfig,
 } = WaJsAppSlice.actions;
 export default WaJsAppSlice.reducer;
