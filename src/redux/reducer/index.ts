@@ -16,7 +16,7 @@
 
 import {combineReducers} from 'redux';
 import global from './global';
-import wajs from 'redux/reducer/wajs';
+import wajs from 'redux/reducer/wajs/reducer';
 import {PayloadAction} from '@reduxjs/toolkit';
 
 const allReducers = combineReducers({

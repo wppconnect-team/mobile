@@ -41,7 +41,7 @@ import {
   setMainReady,
   setWaJsReady,
   setWebpackReady,
-} from 'redux/reducer/wajs';
+} from 'redux/reducer/wajs/reducer';
 
 const waJS = new WaJS();
 
@@ -136,7 +136,6 @@ const WhatsApp = () => {
               });
               dispatch(setAuthenticated(true));
               break;
-
             case 'webpack.ready':
               dispatch(setWebpackReady(true));
               break;

@@ -15,8 +15,7 @@
  */
 
 import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {StyleSheet, View, ScrollView} from 'react-native';
+import {StyleSheet, ScrollView} from 'react-native';
 import {defaultStyles} from 'consts/styles';
 import AppBar from 'components/AppBar';
 import translate from 'translations';
@@ -31,8 +30,9 @@ import {
   TextInput,
   FAB,
 } from '@react-native-material/core';
+import {connector, PropsFromRedux} from 'redux/reducer/wajs/mapper';
 
-interface ConfigScreenProps {
+interface ConfigScreenProps extends PropsFromRedux {
   navigation: NavigationScreenProp<any>;
 }
 
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     marginStart: 10,
     marginTop: 16,
   },
-  view: defaultStyles.view as object,
+  view: {...(defaultStyles.view as object), ...{marginBottom: 50}},
 });
 
-export default connect(null, null)(ConfigScreen);
+export default connector(ConfigScreen);

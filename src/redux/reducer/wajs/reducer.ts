@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {AuthCode} from 'types/wajs/conn';
 import {eventsType as WBViewEventsTp} from 'components/WhatsApp/consts';
+import {AuthCode} from 'types/wajs/conn';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 export interface WaJSConfig {
   deviceName: string;
@@ -50,6 +50,7 @@ export interface WaJsState {
   };
   config: {
     wajs: WaJSConfig;
+    mobile: WaJSMobileConfig;
   };
 }
 
@@ -61,7 +62,7 @@ const initialState = {
   webpack: {ready: false},
 } as WaJsState;
 
-const waJsSlice = createSlice({
+const WaJsAppSlice = createSlice({
   name: 'wajs',
   initialState,
   reducers: {
@@ -89,5 +90,5 @@ export const {
   setWebpackReady,
   setMainReady,
   setWaJsReady,
-} = waJsSlice.actions;
-export default waJsSlice.reducer;
+} = WaJsAppSlice.actions;
+export default WaJsAppSlice.reducer;

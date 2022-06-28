@@ -16,7 +16,6 @@
 
 import React, {Component, RefObject, useEffect} from 'react';
 import {StyleSheet, View, ScrollView, DeviceEventEmitter} from 'react-native';
-import {connect} from 'react-redux';
 import {
   FlingGestureHandler,
   Directions,
@@ -29,7 +28,7 @@ import WebView from 'react-native-webview';
 import {HandlerStateChangeEvent} from 'react-native-gesture-handler/lib/typescript/handlers/gestureHandlerCommon';
 import {showMessage} from 'react-native-flash-message';
 import translate from 'translations';
-import {WaJsState} from 'redux/reducer/wajs';
+import {connector, PropsFromRedux} from 'redux/reducer/wajs/mapper';
 import WhatsApp, {
   sendWhatsAppCommand,
   WhatsAppCommandResult,
@@ -39,7 +38,7 @@ import {gestureHandlerJS, onCommandResult} from 'components/WhatsApp/consts';
 import {QRCodeSettings} from './consts';
 import uuid from 'react-native-uuid';
 
-interface AppHomeScreenProps extends WaJsState {
+interface AppHomeScreenProps extends PropsFromRedux {
   navigation: NavigationScreenProp<any>;
 }
 
@@ -199,15 +198,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state: any) => {
-  return {
-    authcode: state?.wajs?.authcode,
-    isAuthenticted: state.wajs?.isAuthenticted,
-    webpack: state.wajs?.webpack,
-    config: state.wajs?.config,
-    isMainReady: state.wajs?.isMainReady,
-    isWaJsReady: state.wajs?.isWaJsReady,
-  };
-};
-
-export default connect<WaJsState, null>(mapStateToProps, null)(AppHomeScreen);
+export default connector(AppHomeScreen);
