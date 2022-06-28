@@ -84,6 +84,10 @@ class ConfigScreen extends Component<ConfigScreenProps, {}> {
                   },
                 )}
                 style={styles.textInput}
+                value={this.props.config.wajs.deviceName}
+                onChangeText={text =>
+                  this.props.setWaJsConfig({deviceName: text})
+                }
               />
               <TextInput
                 variant="outlined"
@@ -136,36 +140,67 @@ class ConfigScreen extends Component<ConfigScreenProps, {}> {
               </>
             </Surface>
             <Surface elevation={2} category="medium" style={styles.surface}>
-              <Text variant={'h6'}>Avançado</Text>
+              <Text variant={'h6'}>
+                {translate('view.config.stack.advanced.title', {
+                  defaultValue: 'Advanced',
+                })}
+              </Text>
               <Text variant={'caption'}>
-                Configurações para permitir a automatização remota da instância
+                {translate('view.config.stack.advanced.caption', {
+                  defaultValue: 'Settings to enable remote instance automation',
+                })}
               </Text>
               <TextInput
                 variant="standard"
-                placeholder={'wss://seu-servidor'}
-                label="URL de Socket"
-                helperText="Endereço do servidor Socket que fará a comunicação com o dispositivo"
+                placeholder={translate(
+                  'view.config.stack.advanced.inputs.socket.placeholder',
+                  {
+                    defaultValue: 'wss://your-server',
+                  },
+                )}
+                label={translate(
+                  'view.config.stack.advanced.inputs.socket.label',
+                  {
+                    defaultValue: 'Socket URL',
+                  },
+                )}
+                helperText={translate(
+                  'view.config.stack.advanced.inputs.socket.helperText',
+                  {
+                    defaultValue:
+                      'Address of the Socket server that will communicate with the device',
+                  },
+                )}
                 style={styles.textInput}
               />
               <>
                 {/* todo: Adicionar possibilidade de ativar um servidor junto a aplicação */}
                 <ListItem
-                  title="API"
-                  overline={'Servidor Local'}
-                  secondaryText={
-                    'Permitir comandos remotos no dispositivo via Socket'
-                  }
+                  title={translate(
+                    'view.config.stack.advanced.inputs.api.title',
+                    {
+                      defaultValue: 'API',
+                    },
+                  )}
+                  overline={translate(
+                    'view.config.stack.advanced.inputs.api.overline',
+                    {
+                      defaultValue: 'Local Server',
+                    },
+                  )}
+                  secondaryText={translate(
+                    'view.config.stack.advanced.inputs.api.secondaryText',
+                    {
+                      defaultValue:
+                        'Allow remote commands on device via Socket',
+                    },
+                  )}
                   trailing={props => <Switch value={false} />}
                 />
               </>
             </Surface>
           </Stack>
         </ScrollView>
-        <FAB
-          style={styles.fab}
-          icon={props => <Icon name="content-save" {...props} />}
-          color="primary"
-        />
       </ScrollView>
     );
   }
@@ -191,7 +226,7 @@ const styles = StyleSheet.create({
     marginStart: 10,
     marginTop: 16,
   },
-  view: {...(defaultStyles.view as object), ...{marginBottom: 50}},
+  view: defaultStyles.view as object,
 });
 
 export default connector(ConfigScreen);

@@ -30,6 +30,22 @@
                 "title": "Deactivate Google Analytics"
               }
             }
+          },
+          "advanced": {
+            "title": "Advanced",
+            "caption": "Settings to enable remote instance automation",
+            "inputs": {
+              "socket": {
+                "placeholder": "wss://your-server",
+                "label": "Socket URL",
+                "helperText": "Address of the Socket server that will communicate with the device"
+              },
+              "api": {
+                "title": "API",
+                "overline": "Local Server",
+                "secondaryText": "Allow remote commands on device via Socket"
+              }
+            }
           }
         }
       },

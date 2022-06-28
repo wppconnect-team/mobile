@@ -81,6 +81,9 @@ const WaJsAppSlice = createSlice({
     setWebpackReady(state, action: PayloadAction<boolean>) {
       state.webpack.ready = action.payload;
     },
+    setWaJsConfig(state, action: PayloadAction<Partial<WaJSConfig>>) {
+      state.config.wajs = Object.assign(state.config.wajs, action.payload);
+    },
   },
 });
 
@@ -90,5 +93,6 @@ export const {
   setWebpackReady,
   setMainReady,
   setWaJsReady,
+  setWaJsConfig
 } = WaJsAppSlice.actions;
 export default WaJsAppSlice.reducer;
