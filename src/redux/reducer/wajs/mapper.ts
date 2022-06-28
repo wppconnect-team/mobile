@@ -23,6 +23,7 @@ import {
   setMainReady,
   setWaJsReady,
   setWaJsConfig,
+  setMobileConfig, setMobileServerConfig,
 } from 'redux/reducer/wajs/reducer';
 
 const mapState = (state: RootState) => ({
@@ -41,6 +42,7 @@ const mapDispatch = {
   setMainReady: setMainReady,
   setWaJsReady: setWaJsReady,
   setWaJsConfig: setWaJsConfig,
+  setMobileServerConfig: setMobileServerConfig,
 };
 
 export const connector = connect(mapState, mapDispatch);

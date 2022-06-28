@@ -25,19 +25,20 @@ export interface WaJSConfig {
   googleAnalyticsId: string | null;
 }
 
+export interface WaJSMobileServerConfig {
+  uri: string;
+
+  // Events that will be listened to and sent to the server
+  // Currently using "onAny" to capture events, in the future will this be a problem?
+  listenWa: Array<'chat.new_message'> | null;
+
+  // Events provided by WebView
+  listenInstance: Array<WBViewEventsTp> | null;
+  enableAPI: boolean;
+}
+
 export interface WaJSMobileConfig {
-  server: {
-    // todo: Add possibility to access a server with authentication
-    host: string;
-    port: number;
-
-    // Events that will be listened to and sent to the server
-    // Currently using "onAny" to capture events, in the future will this be a problem?
-    listenWa: 'chat.new_message' | null;
-
-    // Events provided by WebView
-    listenInstance: WBViewEventsTp;
-  };
+  server: WaJSMobileServerConfig;
 }
 
 export interface WaJsState {
@@ -67,6 +68,28 @@ const initialState = {
       googleAnalyticsId: null,
       liveLocationLimit: 10,
     },
+    mobile: {
+      server: {
+        uri: '',
+        enableAPI: false,
+        listenInstance: [
+          'whatsapp.message',
+          'whatsapp.error',
+          'whatsapp.contentprocessdidterminate',
+          'whatsapp.contentsizechange',
+          'whatsapp.custommenuselection',
+          'whatsapp.onfiledownload',
+          'whatsapp.httperror',
+          'whatsapp.load',
+          'whatsapp.loadend',
+          'whatsapp.loadprogress',
+          'whatsapp.loadstart',
+          'whatsapp.renderprocessgone',
+          'whatsapp.scroll',
+        ],
+        listenWa: ['chat.new_message'],
+      },
+    },
   },
 } as WaJsState;
 
@@ -92,6 +115,15 @@ const WaJsAppSlice = createSlice({
     setWaJsConfig(state, action: PayloadAction<Partial<WaJSConfig>>) {
       state.config.wajs = Object.assign(state.config.wajs, action.payload);
     },
+    setMobileServerConfig(
+      state,
+      action: PayloadAction<Partial<WaJSMobileServerConfig>>,
+    ) {
+      state.config.mobile.server = Object.assign(
+        state.config.mobile.server,
+        action.payload,
+      );
+    },
   },
 });
 
@@ -102,5 +134,6 @@ export const {
   setMainReady,
   setWaJsReady,
   setWaJsConfig,
+  setMobileServerConfig,
 } = WaJsAppSlice.actions;
 export default WaJsAppSlice.reducer;

@@ -38,6 +38,9 @@ interface ConfigScreenProps extends PropsFromRedux {
 
 class ConfigScreen extends Component<ConfigScreenProps, {}> {
   render() {
+    // @ts-ignore
+    // @ts-ignore
+    // @ts-ignore
     return (
       <ScrollView
         style={styles.scroll}
@@ -106,6 +109,10 @@ class ConfigScreen extends Component<ConfigScreenProps, {}> {
                 )}
                 style={styles.textInput}
                 keyboardType={'numeric'}
+                value={this.props.config.wajs.liveLocationLimit.toString()}
+                onChangeText={text =>
+                  this.props.setWaJsConfig({liveLocationLimit: Number(text)})
+                }
               />
               <TextInput
                 variant="outlined"
@@ -126,6 +133,14 @@ class ConfigScreen extends Component<ConfigScreenProps, {}> {
                   },
                 )}
                 style={styles.textInput}
+                value={this.props.config.wajs.googleAnalyticsId || ''}
+                editable={!this.props.config.wajs.disableGoogleAnalytics}
+                selectTextOnFocus={
+                  !this.props.config.wajs.disableGoogleAnalytics
+                }
+                onChangeText={text =>
+                  this.props.setWaJsConfig({googleAnalyticsId: text})
+                }
               />
               <>
                 <ListItem
@@ -135,7 +150,16 @@ class ConfigScreen extends Component<ConfigScreenProps, {}> {
                       defaultValue: 'Deactivate Google Analytics',
                     },
                   )}
-                  trailing={props => <Switch value={false} disabled />}
+                  trailing={props => (
+                    <Switch
+                      value={this.props.config.wajs.disableGoogleAnalytics}
+                      onValueChange={value =>
+                        this.props.setWaJsConfig({
+                          disableGoogleAnalytics: value,
+                        })
+                      }
+                    />
+                  )}
                 />
               </>
             </Surface>
@@ -172,6 +196,10 @@ class ConfigScreen extends Component<ConfigScreenProps, {}> {
                   },
                 )}
                 style={styles.textInput}
+                value={this.props.config.mobile.server.uri}
+                onChangeText={text =>
+                  this.props.setMobileServerConfig({uri: text})
+                }
               />
               <>
                 {/* todo: Adicionar possibilidade de ativar um servidor junto a aplicação */}
@@ -195,7 +223,16 @@ class ConfigScreen extends Component<ConfigScreenProps, {}> {
                         'Allow remote commands on device via Socket',
                     },
                   )}
-                  trailing={props => <Switch value={false} />}
+                  trailing={props => (
+                    <Switch
+                      value={this.props.config.mobile.server.enableAPI}
+                      onValueChange={value =>
+                        this.props.setMobileServerConfig({
+                          enableAPI: value,
+                        })
+                      }
+                    />
+                  )}
                 />
               </>
             </Surface>
