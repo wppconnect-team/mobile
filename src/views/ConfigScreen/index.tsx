@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-import React, {Component} from 'react';
+import React from 'react';
 import {connect} from 'react-redux';
-import {StyleSheet, View, ScrollView} from 'react-native';
+import {StyleSheet, ScrollView} from 'react-native';
 import {defaultStyles} from 'consts/styles';
 import AppBar from 'components/AppBar';
 import translate from 'translations';
 import {NavigationScreenProp} from 'react-navigation';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
   Surface,
   Stack,
@@ -29,7 +28,6 @@ import {
   ListItem,
   Switch,
   TextInput,
-  FAB,
 } from '@react-native-material/core';
 
 interface ConfigScreenProps {

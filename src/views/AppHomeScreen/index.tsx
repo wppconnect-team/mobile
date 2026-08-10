@@ -62,7 +62,7 @@ const AppHomeScreen = (
 
     let contactsUpdateInterval = setInterval(() => {
       if (props.isAuthenticted && props.isWaJsReady) {
-        const { result, hookId } = state.instance.contacts;
+        const { result } = state.instance.contacts;
         if (result === null || result === []) {
           updateContacts();
         }
