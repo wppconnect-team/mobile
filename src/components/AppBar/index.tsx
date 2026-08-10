@@ -16,10 +16,6 @@
 
 import React, {useCallback} from 'react';
 import {AppBar, HStack, IconButton} from '@react-native-material/core';
-import {
-
-  useNavigation,
-} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Settings} from 'consts/views';
 

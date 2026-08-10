@@ -90,10 +90,9 @@ WPP.executeCommand = async (command, onResult, onCatch, ...args) => {
 };
 
 WPP.sendCommandWithId = async (command, commandId, ...args) => {
-  let output = null;
   let error = '';
   try {
-    output = WPP.executeCommand(
+    WPP.executeCommand(
       command,
       result => {
         rPostMessage({

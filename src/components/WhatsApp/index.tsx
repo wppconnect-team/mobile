@@ -32,7 +32,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 
-import { showMessage, hideMessage } from 'react-native-flash-message';
+import { showMessage } from 'react-native-flash-message';
 import { useDispatch } from 'react-redux';
 
 import {
@@ -73,7 +73,7 @@ const WhatsApp = () => {
     dispatch(setWaJsReady(false));
     DeviceEventEmitter.emit('whatsapp.updateref', webviewRef);
     const event = DeviceEventEmitter.addListener('whatsapp.message', ev => {
-      const { event, message } = ev;
+      const { event } = ev;
       console.debug(`[Emitter - WhatsApp.Message] -> ${event}`);
     });
     const event2 = DeviceEventEmitter.addListener(
